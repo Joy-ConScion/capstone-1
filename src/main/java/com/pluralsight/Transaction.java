@@ -1,7 +1,14 @@
 package com.pluralsight;
 
-public class Transaction {
+import java.util.Scanner;
 
+public class Transaction {
+        public static void main(String[] args) {
+
+
+
+
+        }
         private String date = "";
         private String time = "";
         private String description = "";
