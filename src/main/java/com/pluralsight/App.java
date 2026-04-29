@@ -12,19 +12,25 @@ import java.util.TimeZone;
 
 
 public class App {
-    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
-//       Establishing scanner for future use----------
-        Scanner keyboard = new Scanner(System.in);
-//       Establishing clock for future use---------
+    public App() throws FileNotFoundException {
+    }
+
+
+    //       Establishing scanner for future use----------
+    static Scanner keyboard = new Scanner(System.in);
+    //        Need to calculate (if there's a) negative amount on the account. If there is offer payment opt else sout N/A
+    FileReader filereader = new FileReader("TransactionExample.csv"); /*Accepts the CSV file and reads it*/
+    BufferedReader bufferedReader = new BufferedReader(filereader);
+
+
+    public static void main(String[] args) throws InterruptedException, FileNotFoundException {
+//       Establishing clock for future use---------MOVE INTO THE PROPER METHOD WHEN USED
         LocalDateTime today = LocalDateTime.now();
         TimeZone timeZone = TimeZone.getTimeZone("US/Central");
 //        System.out.println("(Ex)Today is: " + formattedDate1);
 //
 
 
-//        Accepts the CSV file and reads it
-        FileReader filereader = new FileReader("TransactionExample.csv");
-        BufferedReader bufferedReader = new BufferedReader(filereader);
 //        Starts program
         boolean programIsRunning = true;
 
@@ -49,29 +55,47 @@ public class App {
             case 'd' -> addDeposit();
             case 'p' -> makePayment();
             case 'l' -> accessLedger();
+//            case 'h' -> thismainhomescreen();
             case 'x' -> programIsRunning = false;
         }
         keyboard.close();
     }
 
-    //    Ledger Screen (accessLedger Screen)---------------------------------------------------------
+    //    Ledger Screen (accessLedger Screen)--------------------------------------------------------------------
     private static void accessLedger() {
-        //       Establishing scanner for use
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("""
-                A) All
-                D) Deposits
-                P) Payments
-                R) Reports
-                H) Home
-                """);
-        System.out.println("Choose: ");
-//        Add code to turn char into lowercased
-        char secondCommand = keyboard.next().charAt(0);
-        System.out.println(secondCommand);
+        boolean inaccessLedger = true;
+        while (inaccessLedger) {
+            System.out.println("""
+                    A) All
+                    D) Deposits
+                    P) Payments
+                    R) Reports
+                    H) Home
+                    """);
+            System.out.println("Choose: ");
+            char secondCommand = keyboard.next().toLowerCase().charAt(0);
+            switch (secondCommand) {
+//                case 'a' -> ;
+//                case 'd' -> ;
+//                case 'p' -> ;
+//                case 'r' -> ;
+                case 'h' -> inaccessLedger = false;
+            }
 
+        }
 
-        keyboard.close();
+    }
+    private static void accessLedgerAll(){
+        System.out.println("");
+        String transactionLine = bufferedReader.readLine();
+        int number = 0;
+
+        while (transactionLine != null) {
+            System.out.print(number++ + ". ");
+            System.out.println(transactionLine);
+            transactionLine = bufferedReader.readLine();
+
+        }
     }
 //                BONUS | Custom Reports Screen
 //        System.out.println("""
@@ -83,17 +107,20 @@ public class App {
 //                0) Back
 //                """();
 
-    //    Payment Screen (makePayment Screen)------------------------------------------------------------
+    //    Payment Screen (makePayment Screen)---------------------------------------------------------------------
     private static void makePayment() {
+        boolean inmakePayment = true;
+
 //         prompt user for the debit information and save it to the csv file
 
 
     }
 
-    //    Deposit Screen (addDeposit Screen)-------------------------------------------------------------
+    //    Deposit Screen (addDeposit Screen)------------------------------------------------------------------------
     private static void addDeposit() {
+        boolean inaddDeposit = true;
+
 //      prompt user for the deposit information and save it to the csv file | For flavor, have them add acct number and signature
-        Scanner keyboard = new Scanner(System.in);
         LocalDateTime today = LocalDateTime.now();
 
 //        Vendor format for CSV appendage - Establishing info/variables (date/time/description/vendor/amount) needed for appending later
@@ -116,19 +143,33 @@ public class App {
         int checkRoutingNumber = keyboard.nextInt();
         System.out.println("Check Number: ");
         int checkNumber = keyboard.nextInt();
+        System.out.println("Check Amount: ");
+        double checkAmount = keyboard.nextInt();
         System.out.println("And finally, type your name to digitally sign this check: ");
         int checkSignature = keyboard.nextInt();
-        System.out.println("Does the following information look correct? " + checkRoutingNumber + " | " + checkRoutingNumber + " | " + checkNumber + " | " + checkSignature);
-        System.out.println("True (1) or False (0)");
-        int trueFalseCheck = keyboard.nextInt();
+//            switch (choice) {
+//                case 'r' -> boolean inaddDeposit = false;
+//
+//            }
 
-//        If false, then start over. Else, append it to CSV
-        if (trueFalseCheck == 0);
-                run case 0;
-            else
+//        switch (command){
+//            case ""
+//        }
+//        while loop starts here
+//        System.out.println("Does the following information look correct? " + checkRoutingNumber + " | " + checkRoutingNumber + " | " + checkNumber + " | "+ checkAmount + " | "+ checkSignature);
+//        System.out.println("True (1) or False (0)");
+//        int trueFalseCheck = keyboard.nextInt();
+//        If false, then start over. Else, append it to CSV > Use while loop instead > back burner
+//        if (trueFalseCheck == 0){
+//        }else {
+//        }
+//          if (trueFalseCheck == 0);
+//                run case 0;
+//            else
+//                append (formattedDate1 + formattedDate2 + depositDescription + depositVendor + checkAmount) to csv
+
 
 //      Save resources. Close your stuff out
-        keyboard.close();
 
 //        Method to combine all previous info and export to CSV goes here
 
