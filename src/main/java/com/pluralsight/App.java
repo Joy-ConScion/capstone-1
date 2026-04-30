@@ -87,12 +87,15 @@ public class App {
     private static void accessLedgerAll() {
 
     }
+
     private static void accessLedgerDeposits() {
 
     }
+
     private static void accessLedgerPayments() {
 
     }
+
     private static void accessLedgerReports() {
 
     }
@@ -169,7 +172,7 @@ public class App {
             FileWriter writer = new FileWriter("TransactionExample.csv", true); /*This is the destination. Must also ensure that the append true is applied or will run into errors*/
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
             bufferedWriter.write(formatDate1 + "|" + formatTime2 + "|" + paymentDescription + "|" + paymentVendor + "|" + paymentCheckAmount);/*Preps into format being used*/
-            bufferedWriter.newLine();/*Starts writing in new line*/
+            bufferedWriter.newLine();/*Starts writing in new line | Could've used  + "\n"*/
             Transaction currentTransaction = new Transaction();/*Create instance (object?)of transaction that will be added*/
             currentTransaction.setDate(localDateTime.toLocalDate());/*Rest of this is a snowball of the info*/
             currentTransaction.setTime(localDateTime.toLocalTime());/*.*/
@@ -188,9 +191,23 @@ public class App {
     }
 
     private static void addDeposit() {/*Deposit Screen (addDeposit Screen)------------------------------------------------------------------------*/
-        boolean inaddDeposit = false;/*CHANGE TO TRUE WHEN READY TO WORK ON IT, for now it's false to prevent loop*/
-        while (inaddDeposit) {
+        boolean inaddDeposit = true;/*CHANGE TO TRUE WHEN READY TO WORK ON IT, for now it's false to prevent loop*/
+        while (inaddDeposit) {/*(DATE/TIME/DESCRIPTION/VENDOR/AMOUNT)*/
+            LocalDateTime today = LocalDateTime.now();/*BACKBURNER BONUS: Method for time*/
+            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            String formatDate1 = today.format(formatter1);/*Date*/
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("hh:mm:ss");
+            String formatTime2 = today.format(formatter2);/*Time*/
+            System.out.println("Description of purchase: ");/*Description*/
+            keyboard.nextLine();
+            String depositDescription = keyboard.nextLine();
+            System.out.println("Vendor of purchase: ");/*Vendor*/
+            String depositVendor = keyboard.nextLine();
+            System.out.println("Amount spent on purchase: $"); /*Amount*/
+            double depositAmount = keyboard.nextDouble();
 
+            writeAction(formatDate1, formatTime2, depositDescription, depositVendor, depositAmount);
+            inaddDeposit = false;
 
         }
 
