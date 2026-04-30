@@ -163,19 +163,19 @@ public class App {
 
     }
 
-    private static void writeAction(String formatDate1, String formatTime2, String paymentDescription, String paymentVendor, double paymentCheckAmount) {/*Established for above write action*/
+    private static void writeAction(String formatDate1, String formatTime2, String paymentDescription, String paymentVendor, double paymentCheckAmount) {/*Method to combine all previous info and export to CSV | Established for above write action*/
         LocalDateTime localDateTime = LocalDateTime.now();
         try {
             FileWriter writer = new FileWriter("TransactionExample.csv", true); /*This is the destination. Must also ensure that the append true is applied or will run into errors*/
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
             bufferedWriter.write(formatDate1 + "|" + formatTime2 + "|" + paymentDescription + "|" + paymentVendor + "|" + paymentCheckAmount);/*Preps into format being used*/
-            bufferedWriter.newLine();
-            Transaction currentTransaction = new Transaction();
-            currentTransaction.setDate(localDateTime.toLocalDate());
-            currentTransaction.setTime(localDateTime.toLocalTime());
-            currentTransaction.setDescription(paymentDescription);
-            currentTransaction.setVendor(paymentVendor);
-            currentTransaction.setAmount(paymentCheckAmount);
+            bufferedWriter.newLine();/*Starts writing in new line*/
+            Transaction currentTransaction = new Transaction();/*Create instance (object?)of transaction that will be added*/
+            currentTransaction.setDate(localDateTime.toLocalDate());/*Rest of this is a snowball of the info*/
+            currentTransaction.setTime(localDateTime.toLocalTime());/*.*/
+            currentTransaction.setDescription(paymentDescription);/*..o*/
+            currentTransaction.setVendor(paymentVendor);/*.oO0*/
+            currentTransaction.setAmount(paymentCheckAmount);/*oO00*/
 
             transactions.add(currentTransaction);
 //            sortTransaction(); /*NEED TO MAKE METHOD*/
@@ -191,8 +191,6 @@ public class App {
         boolean inaddDeposit = false;/*CHANGE TO TRUE WHEN READY TO WORK ON IT, for now it's false to prevent loop*/
         while (inaddDeposit) {
 
-
-//        Method to combine all previous info and export to CSV goes here
 
         }
 
