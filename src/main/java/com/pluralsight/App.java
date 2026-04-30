@@ -15,8 +15,7 @@ public class App {
     }
 
     static ArrayList<Transaction> transactions = new ArrayList<>();
-    //       Establishing scanner for future use----------
-    static Scanner keyboard = new Scanner(System.in);
+    static Scanner keyboard = new Scanner(System.in);/*Establishing scanner for future use*/
     //        Need to calculate (if there's a) negative amount on the account. If there is offer payment opt else sout N/A
     static FileReader filereader; /*Accepts the CSV file and reads it*/
 
@@ -29,6 +28,7 @@ public class App {
     }
 
     static BufferedReader bufferedReader = new BufferedReader(filereader);
+
 
 
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -105,8 +105,23 @@ public class App {
         System.out.println("---End of Current Records---");
     }
 
-    private static void accessLedgerDeposits() {
+    private static ArrayList<Transaction> fetchTransLog() {
+        ArrayList<Transaction> transactions = new ArrayList<>();/*Made object*/
+        try {
+            FileReader fileReader = new FileReader("TransactionExample.csv");
+            BufferedReader bufferedReader = new BufferedReader(filereader);
 
+
+        } catch (IOException e){
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+        return transactions;
+    }
+
+
+    private static void accessLedgerDeposits() {
+/*Loop through file backwards to help sort*/
     }
 
     private static void accessLedgerPayments() {
