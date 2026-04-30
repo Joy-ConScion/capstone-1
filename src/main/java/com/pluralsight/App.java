@@ -18,11 +18,20 @@ public class App {
     //       Establishing scanner for future use----------
     static Scanner keyboard = new Scanner(System.in);
     //        Need to calculate (if there's a) negative amount on the account. If there is offer payment opt else sout N/A
-    FileReader filereader = new FileReader("TransactionExample.csv"); /*Accepts the CSV file and reads it*/
-    BufferedReader bufferedReader = new BufferedReader(filereader);
+    static FileReader filereader; /*Accepts the CSV file and reads it*/
+
+    static {
+        try {
+            filereader = new FileReader("TransactionExample.csv");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static BufferedReader bufferedReader = new BufferedReader(filereader);
 
 
-    public static void main(String[] args) throws InterruptedException, FileNotFoundException {
+    public static void main(String[] args) throws InterruptedException, IOException {
         LocalDateTime today = LocalDateTime.now();/*Establishing clock for future use---------MOVE INTO THE PROPER METHOD WHEN USED*/
         TimeZone timeZone = TimeZone.getTimeZone("US/Central");/*System.out.println("(Ex)Today is: " + formattedDate1);/*To test formats*/
 
@@ -58,7 +67,7 @@ public class App {
         keyboard.close();
     }/*Closes main method*/
 
-    private static void accessLedger() {/*Ledger Screen (accessLedger Screen)--------------------------------------------------------------------*/
+    private static void accessLedger() throws IOException {/*Ledger Screen (accessLedger Screen)--------------------------------------------------------------------*/
         boolean inaccessLedger = true;
         while (inaccessLedger) {
             System.out.println("""
@@ -84,8 +93,16 @@ public class App {
 
     }
 
-    private static void accessLedgerAll() {
+    private static void accessLedgerAll() throws IOException {
+        System.out.println("");
+        String transactionLine = bufferedReader.readLine();
+        int number = 0;
 
+        while (transactionLine != null) {
+            System.out.println(transactionLine);
+            transactionLine = bufferedReader.readLine();
+        }
+        System.out.println("---End of Current Records---");
     }
 
     private static void accessLedgerDeposits() {
@@ -97,9 +114,7 @@ public class App {
     }
 
     private static void accessLedgerReports() {
-
-    }
-//                BONUS | Custom Reports Screen
+//        BONUS | Custom Reports Screen
 //        System.out.println("""
 //                1) Month To Date
 //                2) Previous Month
@@ -108,6 +123,7 @@ public class App {
 //                5) Search by Vendor
 //                0) Back
 //                """();
+    }
 
     private static void makePayment() throws InterruptedException {/*Payment Screen (makePayment Screen)---------------------------------------------------------------------*/
         boolean inmakePayment = true;
@@ -206,8 +222,8 @@ public class App {
             System.out.println("Amount spent on purchase: $"); /*Amount*/
             double depositAmount = keyboard.nextDouble();
 
-            writeAction(formatDate1, formatTime2, depositDescription, depositVendor, depositAmount);
-            inaddDeposit = false;
+            writeAction(formatDate1, formatTime2, depositDescription, depositVendor, depositAmount); /*Refer to method*/
+            inaddDeposit = false;/*Closes loop*/
 
         }
 

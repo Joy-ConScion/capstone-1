@@ -1,4 +1,4 @@
-date|time|description|vendor|amount
+DATE | TIME | DESCRIPTION | VENDOR | AMOUNT
 2022-01-02|19:21:08|Cloud Storage|Costco|-290.75
 2022-01-03|17:10:34|Commute|Adobe|-332.91
 2022-01-06|17:46:19|Cash Deposit|Dividend Payment|3328.9
