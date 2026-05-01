@@ -284,7 +284,7 @@ public class App {
     private static void addDeposit() {/*Deposit Screen (addDeposit Screen)------------------------------------------------------------------------*/
         boolean inaddDeposit = true;
         while (inaddDeposit) {/*(DATE/TIME/DESCRIPTION/VENDOR/AMOUNT)*/
-            LocalDateTime today = LocalDateTime.now();/*BACKBURNER BONUS: Method for time*/
+            LocalDateTime today = LocalDateTime.now();/*BACKBURNER BONUS: Method for time | INTERESTING PIECE: Share experience with time format issues*/
             DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String formatDate1 = today.format(formatter1);/*Date*/
             DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("kk:mm:ss");
