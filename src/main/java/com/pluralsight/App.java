@@ -12,7 +12,7 @@ public class App {
     public App() throws FileNotFoundException {
     }
 
-   public static ArrayList<Transaction> transactions = new fetchTransLog();
+    public static ArrayList<Transaction> transactions = new ArrayList<>();
     static Scanner keyboard = new Scanner(System.in);/*Establishing scanner for future use*/
     //        Need to calculate (if there's a) negative amount on the account. If there is offer payment opt else sout N/A
     static FileReader filereader; /*Accepts the CSV file and reads it*/
@@ -107,18 +107,19 @@ public class App {
     }
 
     private static ArrayList<Transaction> fetchTransLog() {
-        ArrayList<Transaction> transactions = new ArrayList<>();/*Made object*/
         try {
             FileReader fileReader = new FileReader("TransactionExample.csv");
-            BufferedReader bufferedReader = new BufferedReader(filereader);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
             String input;
-            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy/MM/dd"); /*Callback: https://medium.com/@AlexanderObregon/javas-localdate-parse-method-explained-d2c2bb7322cb*/
-            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("hh:mm:ss");/*Need formatters again to work with the parsers*/
+
+            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd"); /*Callback: https://medium.com/@AlexanderObregon/javas-localdate-parse-method-explained-d2c2bb7322cb*/
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("kk:mm:ss");/*Need formatters again to work with the parsers*/
+            bufferedReader.readLine(); /*Added to avoid reading the header*/
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokAttrib = input.split("\\|");/*Shorthand for Token Attributes*/
                 Transaction currentTransaction = new Transaction();
-                currentTransaction.setDate(LocalDate.parse(tokAttrib[0],formatter1));
-                currentTransaction.setTime(LocalTime.parse(tokAttrib[1],formatter2));
+                currentTransaction.setDate(LocalDate.parse(tokAttrib[0], formatter1));
+                currentTransaction.setTime(LocalTime.parse(tokAttrib[1], formatter2));
                 currentTransaction.setDescription(tokAttrib[2]);/*Already string and therefore doesn't require parsing*/
                 currentTransaction.setVendor(tokAttrib[3]);
                 currentTransaction.setAmount(Double.parseDouble(tokAttrib[4]));
@@ -134,25 +135,54 @@ public class App {
     }
 
 
-    private static void accessLedgerDeposits() {
-        /*Loop through file backwards to help sort*/
+    private static void accessLedgerDeposits() {/*Loop through file backwards to help sort*/
+        fetchTransLog();
+        for (Transaction transaction : transactions) {
+            if (transaction.getAmount() > 0) {
+                System.out.println((transaction.getDate() + "|" + transaction.getTime() + "|" + transaction.getDescription() + "|" + transaction.getVendor() + "|" + transaction.getAmount()));
 
+            }
+
+
+        }
     }
 
     private static void accessLedgerPayments() {
+        fetchTransLog();
+        for (Transaction transaction : transactions) {
+            if (transaction.getAmount() < 0) {
+                System.out.println((transaction.getDate() + "|" + transaction.getTime() + "|" + transaction.getDescription() + "|" + transaction.getVendor() + "|" + transaction.getAmount()));
 
+            }
+
+
+        }
     }
 
-    private static void accessLedgerReports() {
-//        BONUS | Custom Reports Screen
-//        System.out.println("""
-//                1) Month To Date
-//                2) Previous Month
-//                3) Year to Date
-//                4) Previous Year
-//                5) Search by Vendor
-//                0) Back
-//                """();
+    private static void accessLedgerReports() {/*BONUS | Custom Reports Screen*/
+        boolean inAccessLedgerReports = true;
+
+        while (inAccessLedgerReports) {
+            System.out.println("""
+                    1) Month To Date
+                    2) Previous Month
+                    3) Year to Date
+                    4) Previous Year
+                    5) Search by Vendor
+                    0) Back
+                    """);
+            System.out.println("Choose: ");
+            char secondCommand = keyboard.next().toLowerCase().charAt(0);
+
+            switch (secondCommand) {
+                case '1' -> accessLedgerReportsMonthDate;
+                case '2' -> accessLedgerReportsPrevMonth;
+                case '3' -> accessLedgerReportsYearDate;
+                case '4' -> accessLedgerReportsPrevYear;
+                case '5' -> accessLedgerReportsSearchVendor;
+                case '0' -> inAccessLedgerReports = false;
+            }
+        }
     }
 
     private static void makePayment() throws InterruptedException {/*Payment Screen (makePayment Screen)---------------------------------------------------------------------*/
@@ -167,7 +197,7 @@ public class App {
             String paymentVendor = "Bank";/*Vendor format for CSV appendage - Establishing info/variables (DATE/TIME/DESCRIPTION/VENDOR/AMOUNT) needed for appending later*/
             String paymentDescription = "Check Deposit";/*Descriptor format for CSV appendage*/
 
-            System.out.println("To make a payment via check, please fill out the fields below.");
+            System.out.println("To make a payment via check, please fill out the fields below.");/*And ensure that it's a minimum of $20. > Comment for realism but create it so that it kicks user if below $20*/
             System.out.println("Enter amount as it appears on your check: $");
             double paymentCheckAmount = keyboard.nextDouble();
             keyboard.nextLine(); /*That one error where it jumps over occurs here without this line. Single Carriage Missed Line*/
@@ -259,7 +289,6 @@ public class App {
 
 
     }
-
 
 
 }
