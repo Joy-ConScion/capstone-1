@@ -1,11 +1,9 @@
 package com.pluralsight;
 
 import java.io.*;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
@@ -14,7 +12,7 @@ public class App {
     public App() throws FileNotFoundException {
     }
 
-    static ArrayList<Transaction> transactions = new ArrayList<>();
+   public static ArrayList<Transaction> transactions = new fetchTransLog();
     static Scanner keyboard = new Scanner(System.in);/*Establishing scanner for future use*/
     //        Need to calculate (if there's a) negative amount on the account. If there is offer payment opt else sout N/A
     static FileReader filereader; /*Accepts the CSV file and reads it*/
@@ -28,7 +26,6 @@ public class App {
     }
 
     static BufferedReader bufferedReader = new BufferedReader(filereader);
-
 
 
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -92,8 +89,12 @@ public class App {
         }
 
     }
+//    printTransaction(transactions);
 
     private static void accessLedgerAll() throws IOException {
+//        for (Transaction transaction: transactions){
+//            System.out.println("{ Transaction " +  + "" + + );
+//        }
         System.out.println("");
         String transactionLine = bufferedReader.readLine();
         int number = 0;
@@ -110,9 +111,22 @@ public class App {
         try {
             FileReader fileReader = new FileReader("TransactionExample.csv");
             BufferedReader bufferedReader = new BufferedReader(filereader);
+            String input;
+            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy/MM/dd"); /*Callback: https://medium.com/@AlexanderObregon/javas-localdate-parse-method-explained-d2c2bb7322cb*/
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("hh:mm:ss");/*Need formatters again to work with the parsers*/
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] tokAttrib = input.split("\\|");/*Shorthand for Token Attributes*/
+                Transaction currentTransaction = new Transaction();
+                currentTransaction.setDate(LocalDate.parse(tokAttrib[0],formatter1));
+                currentTransaction.setTime(LocalTime.parse(tokAttrib[1],formatter2));
+                currentTransaction.setDescription(tokAttrib[2]);/*Already string and therefore doesn't require parsing*/
+                currentTransaction.setVendor(tokAttrib[3]);
+                currentTransaction.setAmount(Double.parseDouble(tokAttrib[4]));
+                transactions.add(currentTransaction);
+            }
 
-
-        } catch (IOException e){
+            bufferedReader.close();
+        } catch (IOException e) {
             System.out.println("Error");
             e.printStackTrace();
         }
@@ -121,7 +135,8 @@ public class App {
 
 
     private static void accessLedgerDeposits() {
-/*Loop through file backwards to help sort*/
+        /*Loop through file backwards to help sort*/
+
     }
 
     private static void accessLedgerPayments() {
@@ -244,6 +259,7 @@ public class App {
 
 
     }
+
 
 
 }
