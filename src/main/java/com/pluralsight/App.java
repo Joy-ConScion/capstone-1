@@ -9,12 +9,10 @@ import java.util.TimeZone;
 
 
 public class App {
-    public App() throws FileNotFoundException {
-    }
+//    public App() throws FileNotFoundException {} /*Below code replaces the need for this code*/
 
     public static ArrayList<Transaction> transactions = new ArrayList<>();
     static Scanner keyboard = new Scanner(System.in);/*Establishing scanner for future use*/
-    //        Need to calculate (if there's a) negative amount on the account. If there is offer payment opt else sout N/A
     static FileReader filereader; /*Accepts the CSV file and reads it*/
 
     static {
@@ -25,7 +23,7 @@ public class App {
         }
     }
 
-    static BufferedReader bufferedReader = new BufferedReader(filereader);
+    static BufferedReader bufferedReader = new BufferedReader(filereader); /*bufferedReader to be referred to for the whole system*/
 
 
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -34,15 +32,18 @@ public class App {
 
         boolean programIsRunning = true;/*Starts program*/
 
-        while (programIsRunning) {
+        while (programIsRunning) {/*Establish while loop for the program to operate more than once and allows it to be manually closed*/
 
             System.out.println("Booting up...");/*Home Screen---------------------------------------------------------*/
-//            Thread.sleep(2000);
+            Thread.sleep(2000);
             System.out.println("System checks running...");
-//            Thread.sleep(3000);
+            Thread.sleep(3000);
             System.out.println("All tests have been cleared...INITIATING");
-//            Thread.sleep(1000);
+            Thread.sleep(1000);
             System.out.println("""
+                    ~~~~~~~~~~~~~~~~
+                    ~Super Bank Inc~
+                    ~~~~~~~~~~~~~~~~
                     D) Add Deposit
                     P) Make Payment (Debit)
                     L) Access Ledger
@@ -89,12 +90,8 @@ public class App {
         }
 
     }
-//    printTransaction(transactions);
 
     private static void accessLedgerAll() throws IOException {
-//        for (Transaction transaction: transactions){
-//            System.out.println("{ Transaction " +  + "" + + );
-//        }
         System.out.println("");
         String transactionLine = bufferedReader.readLine();
         int number = 0;
@@ -128,8 +125,8 @@ public class App {
 
             bufferedReader.close();
         } catch (IOException e) {
-            System.out.println("Error");
-            e.printStackTrace();
+            System.out.println("Error - Couldn't retrieve request");
+            e.printStackTrace();/*Leaves a trail of data so that error can be tracked and reviewed*/
         }
         return transactions;
     }
@@ -137,8 +134,8 @@ public class App {
 
     private static void accessLedgerDeposits() {/*Loop through file backwards to help sort*/
         fetchTransLog();
-        for (Transaction transaction : transactions) {
-            if (transaction.getAmount() > 0) {
+        for (Transaction transaction : transactions) {/*Class | Ref in Datafield : Array*/
+            if (transaction.getAmount() > 0) {/*This determines how data is sorted*/
                 System.out.println((transaction.getDate() + "|" + transaction.getTime() + "|" + transaction.getDescription() + "|" + transaction.getVendor() + "|" + transaction.getAmount()));
 
             }
@@ -159,7 +156,7 @@ public class App {
         }
     }
 
-    private static void accessLedgerReports() {/*BONUS | Custom Reports Screen*/
+    private static void accessLedgerReports() {/*BONUS | Custom Reports Screen | NOT COMPLETED*/
         boolean inAccessLedgerReports = true;
 
         while (inAccessLedgerReports) {
@@ -175,15 +172,35 @@ public class App {
             char secondCommand = keyboard.next().toLowerCase().charAt(0);
 
             switch (secondCommand) {
-                case '1' -> accessLedgerReportsMonthDate;
-                case '2' -> accessLedgerReportsPrevMonth;
-                case '3' -> accessLedgerReportsYearDate;
-                case '4' -> accessLedgerReportsPrevYear;
-                case '5' -> accessLedgerReportsSearchVendor;
+                case '1' -> MonthDate();
+                case '2' -> PrevMonth();
+                case '3' -> YearDate();
+                case '4' -> PrevYear();
+                case '5' -> SearchVendor();
                 case '0' -> inAccessLedgerReports = false;
+
+
             }
+
         }
+
     }
+
+    private static void MonthDate() {/*Empty methods*/
+    }
+
+    private static void PrevMonth() {
+    }
+
+    private static void YearDate() {
+    }
+
+    private static void PrevYear() {
+    }
+
+    private static void SearchVendor() {
+    }
+
 
     private static void makePayment() throws InterruptedException {/*Payment Screen (makePayment Screen)---------------------------------------------------------------------*/
         boolean inmakePayment = true;
@@ -257,17 +274,15 @@ public class App {
             currentTransaction.setAmount(paymentCheckAmount);/*oO00*/
 
             transactions.add(currentTransaction);
-//            sortTransaction(); /*NEED TO MAKE METHOD*/
             bufferedWriter.close();
-            writer.close();/*RECOMMENDED BUT IDK WHY*/
         } catch (IOException e) {
-            System.out.println("Unexpected error");
+            System.out.println("Unexpected Error | Entry could not be stored");
         }
 
     }
 
     private static void addDeposit() {/*Deposit Screen (addDeposit Screen)------------------------------------------------------------------------*/
-        boolean inaddDeposit = true;/*CHANGE TO TRUE WHEN READY TO WORK ON IT, for now it's false to prevent loop*/
+        boolean inaddDeposit = true;
         while (inaddDeposit) {/*(DATE/TIME/DESCRIPTION/VENDOR/AMOUNT)*/
             LocalDateTime today = LocalDateTime.now();/*BACKBURNER BONUS: Method for time*/
             DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy/MM/dd");
