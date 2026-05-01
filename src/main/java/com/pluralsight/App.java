@@ -206,9 +206,9 @@ public class App {
         boolean inmakePayment = true;
         while (inmakePayment) {
             LocalDateTime today = LocalDateTime.now();/*prompt user for the deposit information and save it to the csv file | For flavor, have them add acct number and signature*/
-            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy/MM/dd");/*Date format for CSV appendage*/
+            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");/*Date format for CSV appendage*/
             String formatDate1 = today.format(formatter1);
-            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("hh:mm:ss");/*Time format for CSV appendage*/
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("kk:mm:ss");/*Time format for CSV appendage*/
             String formatTime2 = today.format(formatter2);
 
             String paymentVendor = "Bank";/*Vendor format for CSV appendage - Establishing info/variables (DATE/TIME/DESCRIPTION/VENDOR/AMOUNT) needed for appending later*/
@@ -285,9 +285,9 @@ public class App {
         boolean inaddDeposit = true;
         while (inaddDeposit) {/*(DATE/TIME/DESCRIPTION/VENDOR/AMOUNT)*/
             LocalDateTime today = LocalDateTime.now();/*BACKBURNER BONUS: Method for time*/
-            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String formatDate1 = today.format(formatter1);/*Date*/
-            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("hh:mm:ss");
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("kk:mm:ss");
             String formatTime2 = today.format(formatter2);/*Time*/
             System.out.println("Description of purchase: ");/*Description*/
             keyboard.nextLine();
