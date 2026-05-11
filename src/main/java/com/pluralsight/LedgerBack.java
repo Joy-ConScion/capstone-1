@@ -1,18 +1,13 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Scanner;
 
 public class LedgerBack {
 
-    static Scanner keyboard = new Scanner(System.in);
-
     public static void accessLedger() throws IOException {
-        boolean inaccessLedger = true;
-        while (inaccessLedger) {
+        boolean inLedger = true;
+        while (inLedger) {
             System.out.println("""
                     A) All
                     D) Deposits
@@ -21,44 +16,44 @@ public class LedgerBack {
                     H) Home
                     """);
             System.out.println("Choose: ");
-            char secondCommand = keyboard.next().toLowerCase().charAt(0);
-            switch (secondCommand) {
+            char command = App.keyboard.next().toLowerCase().charAt(0);
+
+            switch (command) {
                 case 'a' -> accessLedgerAll();
                 case 'd' -> accessLedgerDeposits();
                 case 'p' -> accessLedgerPayments();
                 case 'r' -> accessLedgerReports();
-                case 'h' -> inaccessLedger = false;
+                case 'h' -> inLedger = false;
                 default -> System.out.println("Invalid Input, please try again.");
             }
         }
     }
 
-    public static void accessLedgerAll() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader("TransactionExample.csv"));
-        String transactionLine = bufferedReader.readLine();
-        while (transactionLine != null) {
-            System.out.println(transactionLine);
-            transactionLine = bufferedReader.readLine();
+    private static void accessLedgerAll() {
+        App.fetchTransLog();
+        for (Transaction t : App.transactions) {
+            System.out.println(String.format("%s|%s|%s|%s|%.2f", t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount()));
         }
-        bufferedReader.close();
         System.out.println("---End of Current Records---");
     }
 
     private static void accessLedgerDeposits() {
-        for (Transaction transaction : App.transactions)
-            if (transaction.getAmount() > 0)
-                System.out.println(transaction.getDate() + "|" + transaction.getTime() + "|" + transaction.getDescription() + "|" + transaction.getVendor() + "|" + transaction.getAmount());
+        App.fetchTransLog();
+        for (Transaction t : App.transactions)
+            if (t.getAmount() > 0)
+                System.out.println(String.format("%s|%s|%s|%s|%.2f", t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount()));
     }
 
     private static void accessLedgerPayments() {
-        for (Transaction transaction : App.transactions)
-            if (transaction.getAmount() < 0)
-                System.out.println(transaction.getDate() + "|" + transaction.getTime() + "|" + transaction.getDescription() + "|" + transaction.getVendor() + "|" + transaction.getAmount());
+        App.fetchTransLog();
+        for (Transaction t : App.transactions)
+            if (t.getAmount() < 0)
+                System.out.println(String.format("%s|%s|%s|%s|%.2f", t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount()));
     }
 
     private static void accessLedgerReports() {
-        boolean inAccessLedgerReports = true;
-        while (inAccessLedgerReports) {
+        boolean inReports = true;
+        while (inReports) {
             System.out.println("""
                     1) Month To Date
                     2) Previous Month
@@ -68,78 +63,61 @@ public class LedgerBack {
                     0) Back
                     """);
             System.out.println("Choose: ");
-            char secondCommand = keyboard.next().toLowerCase().charAt(0);
-            switch (secondCommand) {
+            char command = App.keyboard.next().toLowerCase().charAt(0);
+
+            switch (command) {
                 case '1' -> MonthDate();
                 case '2' -> PrevMonth();
                 case '3' -> YearDate();
                 case '4' -> PrevYear();
                 case '5' -> SearchVendor();
-                case '0' -> inAccessLedgerReports = false;
+                case '0' -> inReports = false;
             }
         }
     }
 
     private static void MonthDate() {
         App.fetchTransLog();
-        System.out.println("Please input the month to review. Format: YYYY-MM");
-        keyboard.nextLine(); // consume leftover newline
-        LocalDate givenDate = LocalDate.parse(keyboard.nextLine() + "-01");
-        for (Transaction transaction : App.transactions) {
-            LocalDate storedDate = transaction.getDate();
-            if (storedDate.getYear() == givenDate.getYear() &&
-                    storedDate.getMonth() == givenDate.getMonth()) {
-                System.out.println(String.format("%s|%s|%s|%s|%.2f", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount()));
-            }
-        }
+        App.keyboard.nextLine(); // consume newline
+        System.out.println("Enter month YYYY-MM: ");
+        LocalDate date = LocalDate.parse(App.keyboard.nextLine() + "-01");
+        for (Transaction t : App.transactions)
+            if (t.getDate().getYear() == date.getYear() && t.getDate().getMonth() == date.getMonth())
+                System.out.println(String.format("%s|%s|%s|%s|%.2f", t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount()));
     }
 
     private static void PrevMonth() {
         App.fetchTransLog();
-        LocalDate now = LocalDate.now();
-        LocalDate prevMonth = now.minusMonths(1);
-        for (Transaction transaction : App.transactions) {
-            LocalDate storedDate = transaction.getDate();
-            if (storedDate.getYear() == prevMonth.getYear() &&
-                    storedDate.getMonth() == prevMonth.getMonth()) {
-                System.out.println(String.format("%s|%s|%s|%s|%.2f", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount()));
-            }
-        }
+        LocalDate prev = LocalDate.now().minusMonths(1);
+        for (Transaction t : App.transactions)
+            if (t.getDate().getYear() == prev.getYear() && t.getDate().getMonth() == prev.getMonth())
+                System.out.println(String.format("%s|%s|%s|%s|%.2f", t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount()));
     }
 
     private static void YearDate() {
         App.fetchTransLog();
-        int currentYear = LocalDate.now().getYear();
-        for (Transaction transaction : App.transactions) {
-            LocalDate storedDate = transaction.getDate();
-            if (storedDate.getYear() == currentYear) {
-                System.out.println(String.format("%s|%s|%s|%s|%.2f", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount()));
-            }
-        }
+        int year = LocalDate.now().getYear();
+        for (Transaction t : App.transactions)
+            if (t.getDate().getYear() == year)
+                System.out.println(String.format("%s|%s|%s|%s|%.2f", t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount()));
     }
 
     private static void PrevYear() {
         App.fetchTransLog();
-        int prevYear = LocalDate.now().getYear() - 1;
-        for (Transaction transaction : App.transactions) {
-            LocalDate storedDate = transaction.getDate();
-            if (storedDate.getYear() == prevYear) {
-                System.out.println(String.format("%s|%s|%s|%s|%.2f", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount()));
-            }
-        }
+        int year = LocalDate.now().getYear() - 1;
+        for (Transaction t : App.transactions)
+            if (t.getDate().getYear() == year)
+                System.out.println(String.format("%s|%s|%s|%s|%.2f", t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount()));
     }
 
     private static void SearchVendor() {
         App.fetchTransLog();
-        keyboard.nextLine();
-        System.out.println("Please type which vendor you would like to see entries for: ");
-        String vendor = keyboard.nextLine().toLowerCase();
-
-        for (Transaction transaction : App.transactions) {
-            if (transaction.getVendor().toLowerCase().equals(vendor)) {
-                System.out.println(String.format("%s|%s|%s|%s|%.2f", transaction.getDate(), transaction.getTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount()));
-            }
-        }
+        App.keyboard.nextLine();
+        System.out.println("Type vendor: ");
+        String vendor = App.keyboard.nextLine();
+        for (Transaction t : App.transactions)
+            if (t.getVendor().equalsIgnoreCase(vendor))
+                System.out.println(String.format("%s|%s|%s|%s|%.2f", t.getDate(), t.getTime(), t.getDescription(), t.getVendor(), t.getAmount()));
     }
-}
 
+}

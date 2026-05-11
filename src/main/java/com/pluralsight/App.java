@@ -3,27 +3,12 @@ package com.pluralsight;
 import java.io.*;
 import java.time.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
-import java.util.TimeZone;
-
 
 public class App {
 
     public static ArrayList<Transaction> transactions = new ArrayList<>();
-    static Scanner keyboard = new Scanner(System.in);
-    static FileReader filereader;
-
-    static {
-        try {
-            filereader = new FileReader("TransactionExample.csv");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static BufferedReader bufferedReader = new BufferedReader(filereader);
-
+    public static final java.util.Scanner keyboard = new java.util.Scanner(System.in);
 
     public static void main(String[] args) {
 
@@ -48,44 +33,32 @@ public class App {
             char command = keyboard.next().toLowerCase().charAt(0);
 
             switch (command) {
-                case 'd' -> addDeposit();
-                case 'p' -> makePayment();
-                case 'l' -> callLedger();
+                case 'd' -> DepositBack.addDeposit();
+                case 'p' -> PaymentBack.makePayment();
+                case 'l' -> {
+                    try {
+                        LedgerBack.accessLedger();
+                    } catch (IOException e) {
+                        System.out.println("Error involving ledger");
+                    }
+                }
                 case 'x' -> programIsRunning = false;
                 default -> System.out.println("Invalid Input, please try again.");
-
             }
         }
+
         keyboard.close();
     }
 
-    private static void addDeposit() {
-
-        DepositBack.addDeposit();
-    }
-
-    private static void makePayment() {
-
-        PaymentBack.makePayment();
-    }
-
-    private static void callLedger() {
-        try {
-            LedgerBack.accessLedger();
-        } catch (IOException e) {
-            System.out.println("Error involving ledger");
-        }
-    }
-
     public static ArrayList<Transaction> fetchTransLog() {
-        try {
-            FileReader fileReader = new FileReader("TransactionExample.csv");
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String input;
+        transactions.clear(); // Prevent duplicates
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("TransactionExample.csv"))) {
 
+            String input;
             DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("kk:mm:ss");
-            bufferedReader.readLine();
+
+            bufferedReader.readLine(); // skip header
             while ((input = bufferedReader.readLine()) != null) {
                 String[] tokAttrib = input.split("\\|");
                 Transaction currentTransaction = new Transaction();
@@ -97,7 +70,6 @@ public class App {
                 transactions.add(currentTransaction);
             }
 
-            bufferedReader.close();
         } catch (IOException e) {
             System.out.println("Error - Couldn't retrieve request");
             e.printStackTrace();
@@ -105,26 +77,22 @@ public class App {
         return transactions;
     }
 
-    public static void writeAction(String formatDate1, String formatTime2, String paymentDescription, String paymentVendor, double paymentCheckAmount) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        try {
-            FileWriter writer = new FileWriter("TransactionExample.csv", true);
-            BufferedWriter bufferedWriter = new BufferedWriter(writer);
-            bufferedWriter.write(formatDate1 + "|" + formatTime2 + "|" + paymentDescription + "|" + paymentVendor + "|" + paymentCheckAmount);
+    public static void writeAction(String formatDate1, String formatTime2, String description, String vendor, double amount) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("TransactionExample.csv", true))) {
+            bufferedWriter.write(formatDate1 + "|" + formatTime2 + "|" + description + "|" + vendor + "|" + amount);
             bufferedWriter.newLine();
-            Transaction currentTransaction = new Transaction();
-            currentTransaction.setDate(localDateTime.toLocalDate());
-            currentTransaction.setTime(localDateTime.toLocalTime());
-            currentTransaction.setDescription(paymentDescription);
-            currentTransaction.setVendor(paymentVendor);
-            currentTransaction.setAmount(paymentCheckAmount);
 
+            Transaction currentTransaction = new Transaction();
+            currentTransaction.setDate(LocalDate.parse(formatDate1));
+            currentTransaction.setTime(LocalTime.parse(formatTime2));
+            currentTransaction.setDescription(description);
+            currentTransaction.setVendor(vendor);
+            currentTransaction.setAmount(amount);
             transactions.add(currentTransaction);
-            bufferedWriter.close();
+
         } catch (IOException e) {
             System.out.println("Unexpected Error | Entry could not be stored");
         }
-
     }
 
 }

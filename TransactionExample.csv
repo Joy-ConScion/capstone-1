@@ -1008,3 +1008,5 @@ DATE | TIME | DESCRIPTION | VENDOR | AMOUNT
 2026-05-01|10:00:12|Entertainment|Best Buy|5000.0
 2026-05-01|10:01:01|Check Deposit|Bank|500.0
 2026-05-11|03:07:28|Check Deposit|Bank|456.0
+2026-05-11|03:19:13|Food|Jimmy John's|20.0
+2026-05-11|03:19:37|Check Deposit|Bank|1234.0
